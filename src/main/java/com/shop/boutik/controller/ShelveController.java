@@ -1,4 +1,4 @@
-package com.shop.boutik.shelve;
+package com.shop.boutik.controller;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,7 +13,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.shop.boutik.helper.dto.shelve.ShelveDto;
+import com.shop.boutik.helper.util.HelperShelve;
 import com.shop.boutik.model.Shelve;
+import com.shop.boutik.shelve.ShelveService;
 
 @RestController
 @RequestMapping("/shelve")
@@ -33,7 +36,7 @@ public class ShelveController {
 
 		List<Shelve> shelves = shelveService.findAllByStoreId(storeId);
 
-		return (List<ShelveDto>) shelveService.parseListModelToDto(shelves);
+		return (List<ShelveDto>) HelperShelve.parseListModelToDto(shelves);
 
 	}
 
@@ -51,7 +54,7 @@ public class ShelveController {
 		Optional<Shelve> shelveOpt = shelveService.findById(shelveId);
 		if (shelveOpt.isPresent()) {
 
-			shelveDto = shelveService.parseModelToDto(shelveOpt.get());
+			shelveDto = HelperShelve.parseModelToDto(shelveOpt.get());
 
 		} else {
 			System.out.println("Shelve with id '" + shelveId + "' not found");
@@ -67,7 +70,7 @@ public class ShelveController {
 	@PostMapping("/create") 
 	public void createShelve(@RequestBody ShelveDto shelveDto) {
 
-		shelveService.create(shelveDto);
+		HelperShelve.create(shelveDto);
 	}
 
 
@@ -79,7 +82,7 @@ public class ShelveController {
 	@PutMapping("/update")
 	public ShelveDto updateShelve(@RequestBody ShelveDto shelveDto) {
 
-		return shelveService.parseModelToDto(shelveService.update(shelveDto));
+		return HelperShelve.parseModelToDto(HelperShelve.update(shelveDto));
 	}
 
 
@@ -90,7 +93,7 @@ public class ShelveController {
 	@DeleteMapping("/delete")
 	public void deleteShelve(@RequestBody ShelveDto shelveDto) {
 
-		shelveService.delete(shelveDto.getId());
+		HelperShelve.delete(shelveDto.getId());
 	}
 
 }

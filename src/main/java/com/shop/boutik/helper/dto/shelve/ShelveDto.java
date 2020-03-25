@@ -1,4 +1,4 @@
-package com.shop.boutik.shelve;
+package com.shop.boutik.helper.dto.shelve;
 
 import lombok.Data;
 
