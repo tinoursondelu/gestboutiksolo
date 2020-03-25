@@ -1,4 +1,4 @@
-package com.shop.boutik.store;
+package com.shop.boutik.controller;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,7 +13,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.shop.boutik.helper.dto.store.StoreDto;
+import com.shop.boutik.helper.util.HelperStore;
 import com.shop.boutik.model.Store;
+import com.shop.boutik.service.StoreService;
 
 @RestController
 @RequestMapping("/store")
@@ -22,8 +25,6 @@ public class StoreController {
 	@Autowired
 	private StoreService storeService;
 	
-	
-//	TODO: add method for search store by name
 	
 	/**
 	 * get list of stores
@@ -34,7 +35,7 @@ public class StoreController {
 		
 		List<Store> stores = storeService.findAll();
 		
-		return (List<StoreDto>) storeService.parseListModelToDto(stores);
+		return (List<StoreDto>) HelperStore.parseListModelToDto(stores);
 	}
 	
 	/**
@@ -42,14 +43,14 @@ public class StoreController {
 	 * @param storeId
 	 * @return StoreDto
 	 */
-	@GetMapping("/{storeId")
+	@GetMapping("/{storeId}")
 	public StoreDto storeDetail(@PathVariable("storeId") Long storeId) {
 		
 		StoreDto storeDto = new StoreDto();
 		
 		Optional<Store> storeOpt = storeService.findById(storeId);
 		if (storeOpt.isPresent()) {
-			storeDto = storeService.parseModelToDto(storeOpt.get());
+			storeDto = HelperStore.parseModelToDto(storeOpt.get());
 		}
 		else {
 			System.out.println("Store with id '" + storeId + "' not found");
@@ -65,7 +66,7 @@ public class StoreController {
 	@PostMapping("/create")
 	public void createStore(@RequestBody StoreDto storeDto) {
 		
-		storeService.create(storeDto);
+		HelperStore.create(storeDto);
 	}
 	
 	/**
@@ -75,7 +76,7 @@ public class StoreController {
 	@DeleteMapping("/delete")
 	public void deleteStore(@RequestBody StoreDto storeDto) {
 		
-		storeService.delete(storeDto.getId());
+		HelperStore.delete(storeDto.getId());
 		
 	}
 	
@@ -88,7 +89,7 @@ public class StoreController {
 	@PutMapping("/update")
 	public Store updateStore(@RequestBody StoreDto storeDto) {
 		
-		return storeService.update(storeDto);
+		return HelperStore.update(storeDto);
 	}
 
 }

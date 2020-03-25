@@ -1,4 +1,4 @@
-package com.shop.boutik.store;
+package com.shop.boutik.helper.dto.store;
 
 import lombok.Data;
 

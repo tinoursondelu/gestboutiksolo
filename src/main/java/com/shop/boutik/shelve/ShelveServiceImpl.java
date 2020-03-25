@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.shop.boutik.model.Shelve;
 import com.shop.boutik.model.Store;
-import com.shop.boutik.store.StoreService;
+import com.shop.boutik.service.StoreService;
 
 @Service
 public class ShelveServiceImpl implements ShelveService {

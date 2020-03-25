@@ -1,34 +1,39 @@
-package com.shop.boutik.store;
+package com.shop.boutik.helper.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 
+import javax.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
+import com.shop.boutik.helper.dto.store.StoreDto;
 import com.shop.boutik.model.Store;
+import com.shop.boutik.service.StoreService;
 
-/**
- * Class controller to manage Stores
- * @author Guiot Olivier
- * @version 202003
- */
-
-@Service
-public class StoreServiceImpl implements StoreService {
-
+@Component
+public class HelperStore {
+	
+	
+	
 	@Autowired
-	private StoreRepository storeRepository;
+	private StoreService storeServiceNonStatic;
+	private static StoreService storeService;
+	
+	@PostConstruct
+	public void initStaticDao() {
+		
+		storeService = this.storeServiceNonStatic;
+	}
 	
 
 	/**
 	 * create promotion for develop test
 	 * @param designation
 	 */
-	@Override
-	public void create(String designation) {
+	public static void create(String designation) {
 
 		Store store = new Store();
 
@@ -37,7 +42,7 @@ public class StoreServiceImpl implements StoreService {
 		if (!verifyIfAlreadyExist(store)) {
 
 			try {
-				storeRepository.save(store);
+				storeService.save(store);
 			} catch (Exception e) {
 				System.out.println(e.getCause());
 			}
@@ -51,8 +56,7 @@ public class StoreServiceImpl implements StoreService {
 	 * create Store with a StoreDto
 	 * @param StoreDto
 	 */
-	@Override
-	public void create(StoreDto storeDto) {
+	public static void create(StoreDto storeDto) {
 
 		Store store = new Store();
 
@@ -61,7 +65,7 @@ public class StoreServiceImpl implements StoreService {
 		if (!verifyIfAlreadyExist(store)) {
 
 			try {
-				storeRepository.save(store);
+				storeService.save(store);
 			} catch (Exception e) {
 				System.out.println(e.getCause());
 			}
@@ -77,12 +81,11 @@ public class StoreServiceImpl implements StoreService {
 	 * @param StoreDto
 	 * @return Store
 	 */
-	@Override
-	public Store update(StoreDto storeDto) {
+	public static Store update(StoreDto storeDto) {
 
 		Store store = new Store();
 
-		Optional<Store> storeOpt = findById(storeDto.getId());
+		Optional<Store> storeOpt = storeService.findById(storeDto.getId());
 		if (storeOpt.isPresent()) {
 			
 			store = parseDtoToModel(storeDto);
@@ -90,7 +93,7 @@ public class StoreServiceImpl implements StoreService {
 			if (!verifyIfAlreadyExist(store)) {
 
 				try {
-					storeRepository.save(store);
+					storeService.save(store);
 				} catch (Exception e) {
 					System.out.println(e.getCause());
 				}
@@ -106,14 +109,13 @@ public class StoreServiceImpl implements StoreService {
 	 * delete a store
 	 * @param idStore
 	 */
-	@Override
-	public void delete(Long id) {
+	public static void delete(Long id) {
 
-		Optional<Store> storeOpt = findById(id);
+		Optional<Store> storeOpt = storeService.findById(id);
 		if (storeOpt.isPresent()) {
 			
 			try {
-				storeRepository.delete(storeOpt.get());
+				storeService.delete(storeOpt.get());
 			} catch (Exception e) {
 				System.out.println("Error while attempt to delete this shelve");
 			}
@@ -127,30 +129,20 @@ public class StoreServiceImpl implements StoreService {
 	 * @param store
 	 * @return boolean
 	 */
-	public boolean verifyIfAlreadyExist(Store store) {
+	public static boolean verifyIfAlreadyExist(Store store) {
+		
+		Optional<Store> storeOpt = storeService.findByDesignation(store.getDesignation());
 
-		return storeRepository.findByDesignation(store.getDesignation()).isPresent();
+		return storeOpt.isPresent();
 	}
-
-
-
-	//	PPPPPPP		AAA		RRRRRR	  SSSSSSS	EEEEEEE
-	//	PP   PP	   AA AA	RR	 RR	  SS		EE
-	//	PP   PP	  AA   AA	RR	 RR	  SS		EE
-	//	PPPPPPP	  AAAAAAA	RRRRRR	  SSSSSSS	EEEEEE
-	//	PP		  AA   AA	RRRR	   	   SS	EE
-	//	PP		  AA   AA	RR	RR		   SS	EE
-	//	PP		  AA   AA	RR   RR	  SSSSSSS	EEEEEEE
-
-
-	//	PARSE MODEL TO DTO
+	
+	
 	/**
 	 * parse a Store to a StoreDto
 	 * @param Store
 	 * @return StoreDto
 	 */
-	@Override
-	public StoreDto parseModelToDto(Store store) {
+	public static StoreDto parseModelToDto(Store store) {
 
 		StoreDto storeDto = new StoreDto();
 
@@ -161,14 +153,12 @@ public class StoreServiceImpl implements StoreService {
 	}
 
 	
-	//	PARSE LIST MODEL TO DTO
 	/**
 	 * parse a list of Store to list of StoreDto
 	 * @Param List<Store>
 	 * @return Collection<StoreDto>
 	 */
-	@Override
-	public Collection<StoreDto> parseListModelToDto(Collection<Store> stores) {
+	public static Collection<StoreDto> parseListModelToDto(Collection<Store> stores) {
 
 		Collection<StoreDto> storesDto = new ArrayList<StoreDto>();
 		for (Store store : stores) {
@@ -183,9 +173,7 @@ public class StoreServiceImpl implements StoreService {
 	 * @param StoreDto
 	 * @return Store
 	 */
-	//	PARSE DTO TO MODEL
-	@Override
-	public Store parseDtoToModel(StoreDto storeDto) {
+	public static Store parseDtoToModel(StoreDto storeDto) {
 
 		Store store = new Store();
 
@@ -194,35 +182,6 @@ public class StoreServiceImpl implements StoreService {
 
 		return store;
 	}
-
-	//	DDDDD		BBBBBB
-	//	DD  DD		BB   BB
-	//	DD   DD		BB   BB
-	//	DD   DD		BBBBBB
-	//	DD   DD		BB   BB
-	//	DD  DD		BB   BB
-	//	DDDDD		BBBBBB
-
-	@Override
-	public Optional<Store> findById(Long id) {
-
-		return storeRepository.findById(id);
-	}
-
-	@Override
-	public List<Store> findAll() {
-
-		return storeRepository.findAll();
-	}
-
-
-	@Override
-	public Optional<Store> findByDesignation(String designation) {
-		
-		return storeRepository.findByDesignation(designation);
-	}
-
-
 
 
 }
