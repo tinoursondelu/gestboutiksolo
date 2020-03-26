@@ -15,19 +15,19 @@ import com.shop.boutik.service.StoreService;
 
 @Component
 public class HelperStore {
-	
-	
-	
+
+
+
 	@Autowired
 	private StoreService storeServiceNonStatic;
 	private static StoreService storeService;
-	
+
 	@PostConstruct
 	public void initStaticDao() {
-		
+
 		storeService = this.storeServiceNonStatic;
 	}
-	
+
 
 	/**
 	 * create promotion for develop test
@@ -38,7 +38,7 @@ public class HelperStore {
 		Store store = new Store();
 
 		store.setDesignation(designation);
-		
+
 		if (!verifyIfAlreadyExist(store)) {
 
 			try {
@@ -51,7 +51,7 @@ public class HelperStore {
 		}
 	}
 
-	
+
 	/**
 	 * create Store with a StoreDto
 	 * @param StoreDto
@@ -61,7 +61,7 @@ public class HelperStore {
 		Store store = new Store();
 
 		store = parseDtoToModel(storeDto);
-		
+
 		if (!verifyIfAlreadyExist(store)) {
 
 			try {
@@ -73,7 +73,7 @@ public class HelperStore {
 			System.out.println("This store designation is already in use");
 		}
 	}
-	
+
 
 	/**
 	 * update Store 
@@ -87,10 +87,10 @@ public class HelperStore {
 
 		Optional<Store> storeOpt = storeService.findById(storeDto.getId());
 		if (storeOpt.isPresent()) {
-			
+
 			store = parseDtoToModel(storeDto);
-			
-			if (!verifyIfAlreadyExist(store)) {
+
+			if (!verifyIfAlreadyExistWithExclusion(store)) {
 
 				try {
 					storeService.save(store);
@@ -104,7 +104,7 @@ public class HelperStore {
 		return store;
 	}
 
-	
+
 	/**
 	 * delete a store
 	 * @param idStore
@@ -113,16 +113,16 @@ public class HelperStore {
 
 		Optional<Store> storeOpt = storeService.findById(id);
 		if (storeOpt.isPresent()) {
-			
+
 			try {
 				storeService.delete(storeOpt.get());
 			} catch (Exception e) {
 				System.out.println("Error while attempt to delete this shelve");
 			}
-			
+
 		}
 	}
-	
+
 
 	/**
 	 * method for verify if a store exist (by designation)
@@ -130,13 +130,29 @@ public class HelperStore {
 	 * @return boolean
 	 */
 	public static boolean verifyIfAlreadyExist(Store store) {
-		
+
 		Optional<Store> storeOpt = storeService.findByDesignation(store.getDesignation());
 
 		return storeOpt.isPresent();
 	}
-	
-	
+
+	static boolean verifyIfAlreadyExistWithExclusion(Store store) {
+
+		Optional<Store> dbStore = storeService.findByDesignation(store.getDesignation());
+		
+		if (dbStore.isPresent()) {
+
+			if (dbStore.get().getId() == store.getId()) {
+				return false;
+			} else {
+				return true;
+			}
+		} else {
+			return false;
+		}
+	}
+
+
 	/**
 	 * parse a Store to a StoreDto
 	 * @param Store
@@ -152,7 +168,7 @@ public class HelperStore {
 		return storeDto;
 	}
 
-	
+
 	/**
 	 * parse a list of Store to list of StoreDto
 	 * @Param List<Store>

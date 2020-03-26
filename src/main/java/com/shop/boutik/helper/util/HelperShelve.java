@@ -19,35 +19,35 @@ import lombok.extern.slf4j.Slf4j;
 
 @Component
 public class HelperShelve {
-	
-	
+
+
 	@Autowired
 	private ShelveService shelveServiceNonStatic;
 	private static ShelveService shelveService;
-	
+
 	@Autowired
 	private StoreService storeServiceNonStatic;
 	private static StoreService storeService;
-	
+
 	@PostConstruct
 	public void initStaticDao() {
-		
+
 		storeService = this.storeServiceNonStatic;
 		shelveService = this.shelveServiceNonStatic;
 	}
-	
+
 	/**
 	 * create new shelve (for develop tests)
 	 * @param designation
 	 * @param store
 	 */
 	public static void create(String designation, Store store) {
-		
+
 		Shelve shelve = new Shelve();
 
 		shelve.setDesignation(designation);
 		shelve.setStore(store);
-		
+
 		if (!verifyIfAlreadyExist(shelve)) {
 
 			try {
@@ -58,22 +58,22 @@ public class HelperShelve {
 		} else {
 			System.out.println("This shleve designation is already in use");
 		}
-		
+
 	}
-	
-	
+
+
 	/**
 	 * create new shelve
 	 * @param shelveDto
 	 */
 	public static void create(ShelveDto shelveDto) {
-		
+
 		Shelve shelve = new Shelve();
-		
+
 		shelve = parseDtoToModel(shelveDto);
-		
+
 		if (!verifyIfAlreadyExist(shelve)) {
-			
+
 			try {
 				shelveService.save(shelve);
 			} catch (Exception e) {
@@ -82,10 +82,10 @@ public class HelperShelve {
 		} else {
 			System.out.println("This shelve designation is already in use");
 		}
-		
+
 	}
-	
-	
+
+
 	/**
 	 * update an existing shelve
 	 * @param id
@@ -93,16 +93,16 @@ public class HelperShelve {
 	 * @return shelve
 	 */
 	public static Shelve update(ShelveDto shelveDto) {
-		
+
 		Shelve shelve = new Shelve();
-		
+
 		Optional<Shelve> shelveOpt = shelveService.findById(shelveDto.getId());
 		if (shelveOpt.isPresent()) {
-			
+
 			shelve = parseDtoToModel(shelveDto);
-			
+
 			if (!verifyIfAlreadyExist(shelve)) {
-				
+
 				try {
 					shelveService.save(shelve);
 				} catch (Exception e) {
@@ -114,17 +114,17 @@ public class HelperShelve {
 		}
 		return shelve;
 	}
-	
-	
+
+
 	/**
 	 * delete an existing shelve
 	 * @param id
 	 */
 	public static void delete(Long id) {
-		
+
 		Optional<Shelve> shelveOpt = shelveService.findById(id);
 		if (shelveOpt.isPresent()) {
-			
+
 			try {
 				shelveService.delete(shelveOpt.get());
 			} catch (Exception e) {
@@ -132,7 +132,7 @@ public class HelperShelve {
 			}
 		}
 	}
-	
+
 	/**
 	 * verify if shelve already exist
 	 * @param shelve
@@ -142,9 +142,26 @@ public class HelperShelve {
 
 		return shelveService.findByDesignation(shelve.getDesignation()).isPresent();
 	}
-	
-	
-	
+
+	public static boolean verifyIfAlreadyExistWithExclusion(Shelve shelve) {
+
+		Optional<Shelve> dbShelve = shelveService.findByDesignation(shelve.getDesignation());
+
+		if (dbShelve.isPresent()) {
+
+			if (dbShelve.get().getId() == shelve.getId()) {
+				return false;
+			} else {
+				return true;
+			}
+		} else {
+			return false;
+
+		}
+	}
+
+
+
 
 	//	PPPPPPP		AAA		RRRRRR	  SSSSSSS	EEEEEEE
 	//	PP   PP	   AA AA	RR	 RR	  SS		EE
@@ -171,7 +188,7 @@ public class HelperShelve {
 		return shelveDto;
 	}
 
-	
+
 	/**
 	 * parse a list of Shelve to list of ShelveDto
 	 * @Param List<Shelve>
