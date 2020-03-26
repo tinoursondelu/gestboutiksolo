@@ -1,4 +1,4 @@
-package com.shop.boutik.shelve;
+package com.shop.boutik.service;
 
 import java.util.List;
 import java.util.Optional;
@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.shop.boutik.model.Shelve;
+import com.shop.boutik.repository.ShelveRepository;
 
 @Service
 public class ShelveServiceImpl implements ShelveService {

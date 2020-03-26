@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.shop.boutik.helper.dto.shelve.ShelveDto;
 import com.shop.boutik.helper.util.HelperShelve;
 import com.shop.boutik.model.Shelve;
-import com.shop.boutik.shelve.ShelveService;
+import com.shop.boutik.service.ShelveService;
 
 @RestController
 @RequestMapping("/shelve")

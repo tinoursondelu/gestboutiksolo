@@ -12,8 +12,10 @@ import org.springframework.stereotype.Component;
 import com.shop.boutik.helper.dto.shelve.ShelveDto;
 import com.shop.boutik.model.Shelve;
 import com.shop.boutik.model.Store;
+import com.shop.boutik.service.ShelveService;
 import com.shop.boutik.service.StoreService;
-import com.shop.boutik.shelve.ShelveService;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Component
 public class HelperShelve {
@@ -131,7 +133,11 @@ public class HelperShelve {
 		}
 	}
 	
-	
+	/**
+	 * verify if shelve already exist
+	 * @param shelve
+	 * @return boolean
+	 */
 	public static boolean verifyIfAlreadyExist(Shelve shelve) {
 
 		return shelveService.findByDesignation(shelve.getDesignation()).isPresent();

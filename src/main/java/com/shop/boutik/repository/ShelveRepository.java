@@ -1,4 +1,4 @@
-package com.shop.boutik.shelve;
+package com.shop.boutik.repository;
 
 import java.util.List;
 import java.util.Optional;
