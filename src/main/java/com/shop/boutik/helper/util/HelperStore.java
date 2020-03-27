@@ -136,6 +136,11 @@ public class HelperStore {
 		return storeOpt.isPresent();
 	}
 
+	/**
+	 * verify if store already exist by designation with exclude current store
+	 * @param store
+	 * @return boolean
+	 */
 	static boolean verifyIfAlreadyExistWithExclusion(Store store) {
 
 		Optional<Store> dbStore = storeService.findByDesignation(store.getDesignation());

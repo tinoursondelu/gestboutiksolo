@@ -1,4 +1,4 @@
-package com.shop.boutik.item;
+package com.shop.boutik.repository;
 
 import java.util.Optional;
 

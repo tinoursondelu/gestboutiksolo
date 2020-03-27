@@ -1,5 +1,6 @@
-package com.shop.boutik.item;
+package com.shop.boutik.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import com.shop.boutik.model.Item;
@@ -13,6 +14,8 @@ public interface ItemService {
 	void save(Item item);
 
 	void delete(Item item);
+
+	List<Item> findAll();
 
 	
 

@@ -1,4 +1,4 @@
-package com.shop.boutik.item;
+package com.shop.boutik.helper.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -9,7 +9,9 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.shop.boutik.helper.dto.item.ItemDto;
 import com.shop.boutik.model.Item;
+import com.shop.boutik.service.ItemService;
 
 @Component
 public class HelperItem {
@@ -25,7 +27,7 @@ public class HelperItem {
 	}
 
 
-	static void create(String designation) {
+	public static void create(String designation) {
 
 		Item item = new Item();
 
@@ -44,7 +46,7 @@ public class HelperItem {
 
 	}
 
-	static void create(ItemDto itemDto) {
+	public static void create(ItemDto itemDto) {
 
 		Item item = new Item();
 
@@ -65,7 +67,7 @@ public class HelperItem {
 	}
 
 	
-	static Item update(ItemDto itemDto) {
+	public static Item update(ItemDto itemDto) {
 		
 		Item item = new Item();
 		
@@ -88,9 +90,9 @@ public class HelperItem {
 		return item;
 	}
 	
-	static void delete(Long id) {
+	public static void delete(ItemDto itemDto) {
 		
-		Optional<Item> dbItem = itemService.findById(id);
+		Optional<Item> dbItem = itemService.findById(itemDto.getId());
 		if (dbItem.isPresent()) {
 			
 			try {
@@ -106,7 +108,7 @@ public class HelperItem {
 		return itemService.findByDesignation(item.getDesignation()).isPresent();
 	}
 	
-	static boolean verifyIfAlreadyExistWithExclusion(Item item) {
+	public static boolean verifyIfAlreadyExistWithExclusion(Item item) {
 		
 		Optional<Item> dbItem = itemService.findByDesignation(item.getDesignation());
 		
@@ -137,7 +139,7 @@ public class HelperItem {
 	 * @param item
 	 * @return ItemDto
 	 */
-	static ItemDto parseModelToDto(Item item) {
+	public static ItemDto parseModelToDto(Item item) {
 
 		ItemDto itemDto = new ItemDto();
 
@@ -152,7 +154,7 @@ public class HelperItem {
 	 * @param items
 	 * @return Collection<ItemDto>
 	 */
-	static Collection<ItemDto> parseListModelToDto(Collection<Item> items) {
+	public static Collection<ItemDto> parseListModelToDto(Collection<Item> items) {
 
 		Collection<ItemDto> itemsDto = new ArrayList<ItemDto>();
 
@@ -167,7 +169,7 @@ public class HelperItem {
 	 * @param itemsStore
 	 * @return Item
 	 */
-	static Item parseDtoToModel(ItemDto itemDto) {
+	public static Item parseDtoToModel(ItemDto itemDto) {
 
 		Item item = new Item();
 

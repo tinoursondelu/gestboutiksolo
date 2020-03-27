@@ -1,11 +1,13 @@
-package com.shop.boutik.item;
+package com.shop.boutik.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.shop.boutik.model.Item;
+import com.shop.boutik.repository.ItemRepository;
 
 @Service
 public class ItemServiceImpl implements ItemService {
@@ -36,6 +38,12 @@ public class ItemServiceImpl implements ItemService {
 	public void delete(Item item) {
 
 		itemRepository.delete(item);
+	}
+
+	@Override
+	public List<Item> findAll() {
+		
+		return itemRepository.findAll();
 	}
 
 
