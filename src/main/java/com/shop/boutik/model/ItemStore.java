@@ -46,13 +46,13 @@ public class ItemStore extends Auditable implements Serializable {
 	@Column(nullable = false, unique = true)
 	private String designation;
 	
-	@OneToOne
+	@ManyToOne
 	private Color color;
 	
-	@OneToOne
+	@ManyToOne
 	private Size size;
 	
-	@OneToOne
+	@ManyToOne
 	private Brand brand;
 
 	@ManyToMany
