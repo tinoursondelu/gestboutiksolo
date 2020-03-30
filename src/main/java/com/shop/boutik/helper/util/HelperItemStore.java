@@ -2,6 +2,7 @@ package com.shop.boutik.helper.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 
@@ -9,7 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.shop.boutik.helper.dto.itemStore.ItemStoreDto;
+import com.shop.boutik.model.Brand;
+import com.shop.boutik.model.Color;
+import com.shop.boutik.model.Item;
 import com.shop.boutik.model.ItemStore;
+import com.shop.boutik.model.Size;
 import com.shop.boutik.service.BrandServiceImpl;
 import com.shop.boutik.service.ColorServiceImpl;
 import com.shop.boutik.service.ItemService;
@@ -53,6 +58,79 @@ public class HelperItemStore {
 		sizeService = this.sizeServiceNonStatic;
 	}
 	
+	public static void create(Long idItem, Long idBrand, Long idColor, Long idSize) {
+		
+		ItemStore itemStore = new ItemStore();
+		Item item = itemService.findById(idItem).get();
+		Brand brand = brandService.findById(idBrand).get();
+		Color color = colorService.findById(idColor).get();
+		Size size = sizeService.findById(idSize).get();
+		
+		itemStore.setItem(item);
+		itemStore.setBrand(brand);
+		itemStore.setColor(color);
+		itemStore.setSize(size);
+		itemStore.setDesignation(createDesignation(itemStore));
+		
+		try {
+			itemStoreService.save(itemStore);
+		} catch (Exception e) {
+			System.out.println(e.getCause());
+		}
+		
+	}
+	
+	public static void create(ItemStoreDto itemStoreDto) {
+		
+		ItemStore itemStore = new ItemStore();
+		
+		itemStore.setItem(itemService.findById(itemStoreDto.getIdItem()).get());
+		itemStore.setBrand(brandService.findById(itemStoreDto.getIdBrand()).get());
+		itemStore.setColor(colorService.findById(itemStoreDto.getIdColor()).get());
+		itemStore.setSize(sizeService.findById(itemStoreDto.getIdSize()).get());
+		itemStore.setDesignation(createDesignation(itemStore));
+		
+		try {
+			itemStoreService.save(itemStore);
+		} catch (Exception e) {
+			System.out.println(e.getCause());
+		}
+		
+	}
+	
+	public static ItemStore update(ItemStoreDto itemStoreDto) {
+		
+		ItemStore itemStore = new ItemStore();
+		
+		Optional<ItemStore> dbItemStore = itemStoreService.findById(itemStoreDto.getId());
+		if (dbItemStore.isPresent()) {
+			
+			parseDtoToModel(itemStoreDto);
+			
+			if (!verifyIfAlreadyExist(itemStore)) {
+				
+				try {
+					itemStoreService.save(itemStore);
+				} catch (Exception e) {
+					System.out.println(e.getCause());
+				}
+			} System.out.println("This itemStore already exist");
+		}
+		return itemStore;
+	}
+	
+	public static void delete(Long id) {
+		
+		Optional<ItemStore> itemStore = itemStoreService.findById(id);
+		if (itemStore.isPresent()) {
+			
+			try {
+				itemStoreService.delete(itemStore.get());
+			} catch (Exception e) {
+				System.out.println(e.getCause());
+			}
+		}
+	}
 	
 	public static String createDesignation(ItemStore itemStore) {
 		
@@ -61,10 +139,15 @@ public class HelperItemStore {
 		if (itemStore.getBrand() != null && itemStore.getColor() != null && itemStore.getSize() != null 
 				&& itemStore.getItem() != null) {
 			
-			designation = (itemStore.getItem().getDesignation() + itemStore.getBrand().getLabel() + itemStore.getColor().getLabel() 
-					+ itemStore.getSize().getLabel());
+			designation = (itemStore.getItem().getDesignation() + " " + itemStore.getBrand().getLabel() + " "
+			+ itemStore.getColor().getLabel() + " " + itemStore.getSize().getLabel());
 		}
 		return designation;
+	}
+	
+	public static boolean verifyIfAlreadyExist(ItemStore itemStore) {
+		
+		return itemStoreService.finByDesignation(itemStore.getDesignation()).isPresent();
 	}
 
 
