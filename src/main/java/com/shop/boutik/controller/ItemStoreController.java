@@ -57,7 +57,7 @@ public class ItemStoreController {
 
 	@PostMapping("/create")
 	public void create(@RequestBody ItemStoreDto itemStoreDto) {
-
+System.out.println("c'est parti");
 		HelperItemStore.create(itemStoreDto);
 	}
 

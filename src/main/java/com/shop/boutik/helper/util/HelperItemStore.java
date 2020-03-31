@@ -27,26 +27,26 @@ public class HelperItemStore {
 	@Autowired
 	private ItemStoreService itemStoreServiceNonStatic;
 	private static ItemStoreService itemStoreService;
-	
+
 	@Autowired
 	private ItemService itemServiceNonStatic;
 	private static ItemService itemService;
-	
+
 	@Autowired
 	private BrandServiceImpl brandServiceNonStatic;
 	private static BrandServiceImpl brandService;
-	
+
 	@Autowired
 	private ColorServiceImpl colorServiceNonStatic;
 	private static ColorServiceImpl colorService;
-	
+
 	@Autowired
 	private SizeServiceImpl sizeServiceNonStatic;
 	private static SizeServiceImpl sizeService;
-	
-	
-	
-	
+
+
+
+
 
 	@PostConstruct
 	public void initStaticDao() {
@@ -57,58 +57,67 @@ public class HelperItemStore {
 		colorService = this.colorServiceNonStatic;
 		sizeService = this.sizeServiceNonStatic;
 	}
-	
+
 	public static void create(Long idItem, Long idBrand, Long idColor, Long idSize) {
-		
+
 		ItemStore itemStore = new ItemStore();
 		Item item = itemService.findById(idItem).get();
 		Brand brand = brandService.findById(idBrand).get();
 		Color color = colorService.findById(idColor).get();
 		Size size = sizeService.findById(idSize).get();
-		
+
 		itemStore.setItem(item);
 		itemStore.setBrand(brand);
 		itemStore.setColor(color);
 		itemStore.setSize(size);
 		itemStore.setDesignation(createDesignation(itemStore));
-		
-		try {
-			itemStoreService.save(itemStore);
-		} catch (Exception e) {
-			System.out.println(e.getCause());
+
+		if (!verifyIfAlreadyExist(itemStore)) {
+
+			try {
+				itemStoreService.save(itemStore);
+			} catch (Exception e) {
+				System.out.println(e.getCause());
+			}
+		} else {
+			System.out.println("This itemStore already exist");
 		}
-		
 	}
-	
+
 	public static void create(ItemStoreDto itemStoreDto) {
-		
+
 		ItemStore itemStore = new ItemStore();
-		
+
 		itemStore.setItem(itemService.findById(itemStoreDto.getIdItem()).get());
 		itemStore.setBrand(brandService.findById(itemStoreDto.getIdBrand()).get());
 		itemStore.setColor(colorService.findById(itemStoreDto.getIdColor()).get());
 		itemStore.setSize(sizeService.findById(itemStoreDto.getIdSize()).get());
 		itemStore.setDesignation(createDesignation(itemStore));
-		
-		try {
-			itemStoreService.save(itemStore);
-		} catch (Exception e) {
-			System.out.println(e.getCause());
+
+		if (!verifyIfAlreadyExist(itemStore)) {
+
+			try {
+				itemStoreService.save(itemStore);
+			} catch (Exception e) {
+				System.out.println(e.getCause());
+			}
+		} else {
+			System.out.println("This itemStore already exist");
 		}
-		
+
 	}
-	
+
 	public static ItemStore update(ItemStoreDto itemStoreDto) {
-		
+
 		ItemStore itemStore = new ItemStore();
-		
+
 		Optional<ItemStore> dbItemStore = itemStoreService.findById(itemStoreDto.getId());
 		if (dbItemStore.isPresent()) {
-			
-			parseDtoToModel(itemStoreDto);
-			
+// TODO: add method for verify with exclusion
+			itemStore = parseDtoToModel(itemStoreDto);
+
 			if (!verifyIfAlreadyExist(itemStore)) {
-				
+
 				try {
 					itemStoreService.save(itemStore);
 				} catch (Exception e) {
@@ -118,12 +127,12 @@ public class HelperItemStore {
 		}
 		return itemStore;
 	}
-	
+
 	public static void delete(Long id) {
-		
+
 		Optional<ItemStore> itemStore = itemStoreService.findById(id);
 		if (itemStore.isPresent()) {
-			
+// TODO: delete aussi shelve
 			try {
 				itemStoreService.delete(itemStore.get());
 			} catch (Exception e) {
@@ -131,22 +140,22 @@ public class HelperItemStore {
 			}
 		}
 	}
-	
+
 	public static String createDesignation(ItemStore itemStore) {
-		
+
 		String designation = "";
-		
+
 		if (itemStore.getBrand() != null && itemStore.getColor() != null && itemStore.getSize() != null 
 				&& itemStore.getItem() != null) {
-			
+
 			designation = (itemStore.getItem().getDesignation() + " " + itemStore.getBrand().getLabel() + " "
-			+ itemStore.getColor().getLabel() + " " + itemStore.getSize().getLabel());
+					+ itemStore.getColor().getLabel() + " " + itemStore.getSize().getLabel());
 		}
 		return designation;
 	}
-	
+
 	public static boolean verifyIfAlreadyExist(ItemStore itemStore) {
-		
+
 		return itemStoreService.finByDesignation(itemStore.getDesignation()).isPresent();
 	}
 
@@ -188,7 +197,7 @@ public class HelperItemStore {
 	public static ItemStore parseDtoToModel(ItemStoreDto itemStoreDto) {
 
 		ItemStore itemStore = new ItemStore();
-		
+
 		itemStore.setId(itemStoreDto.getId());
 		itemStore.setItem(itemService.findById(itemStoreDto.getIdItem()).get());
 		itemStore.setBrand(brandService.findById(itemStoreDto.getIdBrand()).get());
