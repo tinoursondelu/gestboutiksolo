@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Optional;
 
 import javax.annotation.PostConstruct;
+import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -22,6 +23,7 @@ import com.shop.boutik.service.ItemStoreService;
 import com.shop.boutik.service.SizeServiceImpl;
 
 @Component
+@Transactional
 public class HelperItemStore {
 
 	@Autowired
@@ -43,8 +45,6 @@ public class HelperItemStore {
 	@Autowired
 	private SizeServiceImpl sizeServiceNonStatic;
 	private static SizeServiceImpl sizeService;
-
-
 
 
 
@@ -132,7 +132,7 @@ public class HelperItemStore {
 
 		Optional<ItemStore> itemStore = itemStoreService.findById(id);
 		if (itemStore.isPresent()) {
-// TODO: delete aussi shelve
+			
 			try {
 				itemStoreService.delete(itemStore.get());
 			} catch (Exception e) {

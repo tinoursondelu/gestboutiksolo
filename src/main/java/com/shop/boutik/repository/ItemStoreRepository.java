@@ -12,4 +12,5 @@ public interface ItemStoreRepository extends JpaRepository<ItemStore, Long> {
 
 	Optional<ItemStore> findByDesignation(String designation);
 
+
 }

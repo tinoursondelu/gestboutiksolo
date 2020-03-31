@@ -53,9 +53,9 @@ INSERT INTO boutik.items(id, designation) VALUES
 ;
 
 -- ItemStore
-INSERT INTO boutik.items_store(id, designation, item_id, brand_id, color_id, size_id) VALUES
-(1, 'Pantalon Nike Black XL', 1, 1, 5, 5),
-(2, 'Pantalon Nike Black XXL', 1, 1, 5, 6)
+INSERT INTO boutik.items_store(id, designation, item_id, brand_id, color_id, size_id, shelve_id) VALUES
+(1, 'Pantalon Nike Black XL', 1, 1, 5, 5, 4),
+(2, 'Pantalon Nike Black XXL', 1, 1, 5, 6, 4)
 
 ;
 
@@ -67,10 +67,10 @@ INSERT INTO boutik.items_store_stores(items_store_id, stores_id) VALUES
 
 ;
 
-
--- shelves_items_store
-INSERT INTO boutik.shelves_items_store(shelves_id, items_store_id) VALUES
-(4, 1),
-(4, 2)
-
-;
+--
+-- -- shelves_items_store
+-- INSERT INTO boutik.shelves_items_store(shelves_id, items_store_id) VALUES
+-- (4, 1),
+-- (4, 2)
+--
+-- ;

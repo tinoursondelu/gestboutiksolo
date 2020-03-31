@@ -45,6 +45,7 @@ public class ItemStoreServiceImpl implements ItemStoreService{
 		return itemStoreRepository.findAll();
 	}
 
+
 	
 
 }

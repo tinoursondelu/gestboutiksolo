@@ -61,6 +61,11 @@ public class ShelveServiceImpl implements ShelveService {
 		shelveRepository.delete(shelve);
 	}
 
+	public void deleteByItemsStoreId(Long idItemStore) {
+System.out.println("hohohohohoho");
+		shelveRepository.deleteByItemsStoreId(idItemStore);
+	}
+
 
 
 }
